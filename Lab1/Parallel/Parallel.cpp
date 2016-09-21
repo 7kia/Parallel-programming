@@ -80,7 +80,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	for (int i = 0; i < AMOUNT_THREAD; i++)
 	{
 		//создаем потоки
-		Vector2UL startMatrix = Vector2UL((i % INPUT_MATRIX.size()) * SIZE_SECTION, (i / INPUT_MATRIX.size()) * SIZE_SECTION);
+		Vector2UL startMatrix = Vector2UL((i * SIZE_SECTION)  % INPUT_MATRIX.size()
+										, (i * SIZE_SECTION) / INPUT_MATRIX.size() * SIZE_SECTION);
+
+		Vector2UL endMatrix = startMatrix;
+		endMatrix.x += SIZE_SECTION - 1;
+		endMatrix.y += SIZE_SECTION - 1;
+
+
 		thread[i] = CreateThread(NULL, 0, &ComputeMinorsMatrix, &sourcesData, 0, &thrId[i]);
 	}
 	//ждем, пока все эти потоки завершатся
