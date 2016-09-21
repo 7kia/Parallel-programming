@@ -24,7 +24,7 @@ static const int ROUNDING_NUMBER = 5;
 
 struct DataForProgram
 {
-	Matrix input;
+	Matrix *input = nullptr;
 	Matrix output;
 
 	Vector2UL startMatrix;
@@ -37,7 +37,8 @@ DWORD WINAPI ComputeMinorsMatrix(void *data)
 	//преобразуем полученные данные к типу структуры
 	DataForProgram *r = (DataForProgram *)data;
 	
-
+	r->output.resize(r->endMatrix.y - r->startMatrix.y + 1, MatrixRow(r->endMatrix.x - r->startMatrix.x + 1));
+	MatrixOperations::GetAdditionalMatrix(*r->input, r->output, r->startMatrix, r->endMatrix);
 	return 0;
 }
 
@@ -63,11 +64,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	srand(time(NULL));
 	//определяем дескрипторы потоков,
 	//идентификаторы потоков и структуры для строк матрицы
-	HANDLE thread[MATRIX_SIZE];
-	DWORD thrId[MATRIX_SIZE];
+	HANDLE thread[AMOUNT_THREAD];
+	DWORD thrId[AMOUNT_THREAD];
 
 	DataForProgram sourcesData;
-	sourcesData.input = INPUT_MATRIX;
+	sourcesData.input = &INPUT_MATRIX;
 	sourcesData.output.resize(INPUT_MATRIX.size(), MatrixRow(INPUT_MATRIX.size()));
 
 	boost::timer::cpu_timer timer;
@@ -96,25 +97,23 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		// TODO : enable threads after write necesssary data
 		//////////////////////////////////
 		// Record from source matrix
-		dataForThread[i].input.resize(SIZE_SECTION, MatrixRow(SIZE_SECTION));
+		dataForThread[i].input = &INPUT_MATRIX;
 		dataForThread[i].output.resize(SIZE_SECTION, MatrixRow(SIZE_SECTION));
 
-		for (size_t second = startMatrix.y; second <= endMatrix.y; ++second)
-		{
-			for (size_t first = startMatrix.x; first <= endMatrix.x; ++first)
-			{
-				size_t x = first - startMatrix.x;
-				size_t y = second - startMatrix.y;
-
-				dataForThread[i].input[y][x] = INPUT_MATRIX[second][first];
-			}
-		}
+		
 		//dataForThread[i].input = 
 		//////////////////////////////////
-		thread[i] = CreateThread(NULL, 0, &ComputeMinorsMatrix, &dataForThread[i], 0, &thrId[i]);
+		// TODO : rewrite value
+		SetThreadAffinityMask(thread[i], i);
+		SetThreadPriority(thread[i], THREAD_PRIORITY_ABOVE_NORMAL);
+
+		thread[i] = CreateThread(NULL, 0, &ComputeMinorsMatrix, &dataForThread[i], CREATE_SUSPENDED, NULL);
+		ResumeThread(thread[i]);
 	}
+
+	
 	//ждем, пока все эти потоки завершатся
-	WaitForMultipleObjects(MATRIX_SIZE, thread, TRUE, INFINITE);
+	WaitForMultipleObjects(AMOUNT_THREAD, thread, TRUE, INFINITE);
 
 	std::string input;
 
@@ -158,7 +157,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	//
 
 	std::string strTime;
-	strTime = boost::timer::format(timer.elapsed(), ROUNDING_NUMBER, "%u");
+
+	strTime = boost::timer::format(timer.elapsed() / float(AMOUNT_THREAD), ROUNDING_NUMBER, "%u");
 
 	return 0;
 }
