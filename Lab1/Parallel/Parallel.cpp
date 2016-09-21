@@ -18,7 +18,7 @@
 #include <boost/algorithm/string.hpp>
 
 static const int MATRIX_SIZE = 500;
-static const int AMOUNT_THREAD = 4;
+static const int AMOUNT_THREAD = 2;
 static const size_t SIZE_SECTION = INPUT_MATRIX.size() / AMOUNT_THREAD * size_t(2);
 static const int ROUNDING_NUMBER = 5;
 
@@ -158,7 +158,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	std::string strTime;
 
-	strTime = boost::timer::format(timer.elapsed() / float(AMOUNT_THREAD), ROUNDING_NUMBER, "%u");
+	double time = timer.elapsed().system * pow(10.f, 9.f) / AMOUNT_THREAD;
+	strTime = boost::timer::format(timer.elapsed(), ROUNDING_NUMBER, "%u");
 
 	return 0;
 }
