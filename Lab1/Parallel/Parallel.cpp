@@ -26,6 +26,9 @@ struct DataForProgram
 {
 	Matrix input;
 	Matrix output;
+
+	Vector2UL startMatrix;
+	Vector2UL endMatrix;
 };
 
 
@@ -87,8 +90,28 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		endMatrix.x += SIZE_SECTION - 1;
 		endMatrix.y += SIZE_SECTION - 1;
 
+		dataForThread[i].startMatrix = startMatrix;
+		dataForThread[i].endMatrix = endMatrix;
 
-		thread[i] = CreateThread(NULL, 0, &ComputeMinorsMatrix, &sourcesData, 0, &thrId[i]);
+		// TODO : enable threads after write necesssary data
+		//////////////////////////////////
+		// Record from source matrix
+		dataForThread[i].input.resize(SIZE_SECTION, MatrixRow(SIZE_SECTION));
+		dataForThread[i].output.resize(SIZE_SECTION, MatrixRow(SIZE_SECTION));
+
+		for (size_t second = startMatrix.y; second <= endMatrix.y; ++second)
+		{
+			for (size_t first = startMatrix.x; first <= endMatrix.x; ++first)
+			{
+				size_t x = first - startMatrix.x;
+				size_t y = second - startMatrix.y;
+
+				dataForThread[i].input[y][x] = INPUT_MATRIX[second][first];
+			}
+		}
+		//dataForThread[i].input = 
+		//////////////////////////////////
+		thread[i] = CreateThread(NULL, 0, &ComputeMinorsMatrix, &dataForThread[i], 0, &thrId[i]);
 	}
 	//ждем, пока все эти потоки завершатся
 	WaitForMultipleObjects(MATRIX_SIZE, thread, TRUE, INFINITE);
