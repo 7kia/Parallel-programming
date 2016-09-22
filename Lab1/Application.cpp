@@ -7,12 +7,29 @@ void RunProgram(int argc, char * argv[])
 {
 	CheckParametrs(argc);
 	
-	Matrix inputMatrix;
-	MatrixOperations::FillMatrixFromFile(argv[1], inputMatrix);
+	//Matrix INPUT_MATRIX;
+	//MatrixOperations::FillMatrixFromFile(argv[1], INPUT_MATRIX);
 
-	Matrix invertMatrix = MatrixOperations::GetAdditionalMatrix(inputMatrix);
+	boost::timer::cpu_timer timer;
 
-	MatrixOperations::PrintMatrix(invertMatrix);	
+	timer.start();
+	CompputeAdditionalMatrixAndPrint(INPUT_MATRIX, cout);
+	timer.stop();
+
+	std::cout << boost::timer::format(timer.elapsed(), ROUNDING_NUMBER, "%u") << std::endl;
+
+}
+
+void CompputeAdditionalMatrixAndPrint(const Matrix & matrix, std::ostream & strm)
+{
+	Matrix additionalMatrix;
+	Vector2UL start(0, 0);
+	Vector2UL end(matrix.size(), matrix.size());
+	additionalMatrix.resize(end.y - start.y, MatrixRow(end.x - start.x));
+
+	additionalMatrix = MatrixOperations::GetAdditionalMatrix(matrix, additionalMatrix);
+
+	MatrixOperations::PrintMatrix(additionalMatrix, strm);
 }
 
 void CheckParametrs(int argc)
@@ -37,6 +54,11 @@ void MatrixOperations::FillMatrixFromFile(string nameFile, Matrix &matrix)
 	size_t height;
 	inputFile >> width;
 	inputFile >> height;
+
+	if ((width != height) || (width == 0) || (height == 0))
+	{
+		throw std::runtime_error("Matrix must have size more zero and be square");
+	}
 
 	MatrixRow row;
 	for (size_t y = 0; y < width; y++)
@@ -66,17 +88,4 @@ void MatrixOperations::FillMatrixFromFile(string nameFile, Matrix &matrix)
 	
 
 
-}
-
-Matrix MatrixOperations::GetAdditionalMatrix(Matrix & matrix)
-{
-	Matrix result = matrix;
-	for (size_t y = 0; y < matrix.size(); ++y)
-	{
-		for (size_t x = 0; x < matrix[0].size(); ++x)
-		{
-			result[y][x] = GetMinor(matrix, x, y);
-		}
-	}
-	return result;
 }

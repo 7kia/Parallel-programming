@@ -18,7 +18,7 @@
 #include <boost/algorithm/string.hpp>
 
 static const int MATRIX_SIZE = 500;
-static const int AMOUNT_THREAD = 8;
+static const int AMOUNT_THREAD = 4;
 static const int AMOUNT_CPU = 2;
 static const size_t SIZE_SECTION = INPUT_MATRIX.size() / AMOUNT_THREAD * size_t(2);
 static const int ROUNDING_NUMBER = 5;

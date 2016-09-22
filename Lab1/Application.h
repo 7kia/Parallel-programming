@@ -7,6 +7,13 @@
 
 #include "MatrixOperations.h"
 
+#include <boost/chrono.hpp>
+#include <boost/timer/timer.hpp>
+#include <boost/algorithm/string.hpp>
+
+static const int ROUNDING_NUMBER = 5;
+
+
 static const std::string MESSAGE_INCORRECT_AMOUNT_ARGUMENTS = "Incorrect amount arguments! Must will be ";
 static const std::string MESSAGE_FAILED_OPEN = "Failed to open ";
 static const std::string MESSAGE_FAILED_OPEN_FOR_READING = " for reading!";
@@ -17,4 +24,5 @@ static const int AMOUNT_ARGUMENTS = 2;
 static const int SIZE_MATRIX = 3;
 
 void RunProgram(int argc, char * argv[]);
+void CompputeAdditionalMatrixAndPrint(const Matrix & matrix, std::ostream & strm);
 void CheckParametrs(int argc);
