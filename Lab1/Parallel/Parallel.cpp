@@ -31,7 +31,6 @@ struct DataForProgram
 	Vector2UL endMatrix;
 };
 
-
 DWORD WINAPI ComputeMinorsMatrix(void *data)
 {
 	//преобразуем полученные данные к типу структуры
@@ -71,20 +70,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	sourcesData.input = &INPUT_MATRIX;
 	sourcesData.output.resize(INPUT_MATRIX.size(), MatrixRow(INPUT_MATRIX.size()));
 
-	boost::timer::cpu_timer timer;
-
-	//
-	// Start
-	// 
-	timer.start();
-	
+	boost::timer::cpu_timer timer;	
 
 	///*
 	std::array<DataForProgram, AMOUNT_THREAD> dataForThread;
-	for (int i = 0; i < AMOUNT_THREAD; i++)
+	for (size_t i = 0; i < AMOUNT_THREAD; i++)
 	{
 		//создаем потоки
-		Vector2UL startMatrix = Vector2UL((i * SIZE_SECTION)  % INPUT_MATRIX.size()
+		Vector2UL startMatrix = Vector2UL((i * SIZE_SECTION) % INPUT_MATRIX.size()
 										, (i * SIZE_SECTION) / INPUT_MATRIX.size() * SIZE_SECTION);
 
 		Vector2UL endMatrix = startMatrix;
@@ -108,48 +101,20 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		SetThreadPriority(thread[i], THREAD_PRIORITY_ABOVE_NORMAL);
 
 		thread[i] = CreateThread(NULL, 0, &ComputeMinorsMatrix, &dataForThread[i], CREATE_SUSPENDED, NULL);
+		
+	}
+	//
+	// Start
+	// 
+	timer.start();
+
+	for (size_t i = 0; i < AMOUNT_THREAD; i++)
+	{
 		ResumeThread(thread[i]);
 	}
-
 	
 	//ждем, пока все эти потоки завершатся
 	WaitForMultipleObjects(AMOUNT_THREAD, thread, TRUE, INFINITE);
-
-	std::string input;
-
-	//выводим результат работы программы на экран
-	for (int i = 0; i < MATRIX_SIZE; i++)
-	{
-		for (int j = 0; j < MATRIX_SIZE; j++)
-		{
-			//input += " " + std::to_string(rows[i].value[j]);
-			//printf(" %d", rows[i].value[j]);
-		}
-		//printf(" | multipl = %d\n", rows[i].result);
-		//input += " | multipl = " + std::to_string(rows[i].result) + "\n";
-	}
-	//*/
-
-	/*
-		// OLD main
-	char * ch = "A\0";
-	char * ch2 = "B\0";
-
-	std::string input;
-
-	HANDLE * handles = new HANDLE[2];
-	handles[0] = CreateThread(NULL, 0, &ThreadProc, ch, CREATE_SUSPENDED, NULL);
-	handles[1] = CreateThread(NULL, 0, &ThreadProc, ch2, CREATE_SUSPENDED, NULL);
-
-	ResumeThread(handles[0]);
-	ResumeThread(handles[1]);
-
-	WaitForMultipleObjects(2, handles, true, INFINITE);
-
-	*/
-
-
-
 
 	timer.stop();
 	//
@@ -158,7 +123,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	std::string strTime;
 
-	double time = timer.elapsed().system * pow(10.f, 9.f) / AMOUNT_THREAD;
+	double time = timer.elapsed().user * pow(10.f, -9.f) / AMOUNT_THREAD;
 	strTime = boost::timer::format(timer.elapsed(), ROUNDING_NUMBER, "%u");
 
 	return 0;
