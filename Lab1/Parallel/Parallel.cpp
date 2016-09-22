@@ -18,7 +18,8 @@
 #include <boost/algorithm/string.hpp>
 
 static const int MATRIX_SIZE = 500;
-static const int AMOUNT_THREAD = 2;
+static const int AMOUNT_THREAD = 8;
+static const int AMOUNT_CPU = 2;
 static const size_t SIZE_SECTION = INPUT_MATRIX.size() / AMOUNT_THREAD * size_t(2);
 static const int ROUNDING_NUMBER = 5;
 
@@ -41,7 +42,19 @@ DWORD WINAPI ComputeMinorsMatrix(void *data)
 	return 0;
 }
 
-#define MAX_LOADSTRING 100
+int GetAffinityMask(int threadIndex)
+{
+	int mask = 0x0000;
+	if (AMOUNT_THREAD / AMOUNT_CPU == 0)
+	{
+		return 1;
+	}
+	int cpuIndex = (threadIndex) / (AMOUNT_THREAD / AMOUNT_CPU);
+
+	return int(pow(2.f, cpuIndex));
+}
+
+#define MAX_LOADSTRING 10000
 
 // √лобальные переменные:
 HINSTANCE hInst;                                // текущий экземпл€р
@@ -72,6 +85,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	boost::timer::cpu_timer timer;	
 
+
+	// TODO : delete
+	std::vector<int> masks;
+	for (size_t i = 0; i < AMOUNT_THREAD; i++)
+	{
+		masks.push_back(GetAffinityMask(i));
+	}
 	///*
 	std::array<DataForProgram, AMOUNT_THREAD> dataForThread;
 	for (size_t i = 0; i < AMOUNT_THREAD; i++)
@@ -97,10 +117,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		//dataForThread[i].input = 
 		//////////////////////////////////
 		// TODO : rewrite value
-		SetThreadAffinityMask(thread[i], i);
-		SetThreadPriority(thread[i], THREAD_PRIORITY_ABOVE_NORMAL);
 
 		thread[i] = CreateThread(NULL, 0, &ComputeMinorsMatrix, &dataForThread[i], CREATE_SUSPENDED, NULL);
+		SetThreadAffinityMask(thread[i], GetAffinityMask(i));
 		
 	}
 	//
