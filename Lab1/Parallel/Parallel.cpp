@@ -19,7 +19,7 @@
 
 static const int MATRIX_SIZE = 500;
 static const int AMOUNT_THREAD = 4;
-static const int AMOUNT_CPU = 2;
+static const int AMOUNT_CPU = 4;
 static const size_t SIZE_SECTION = INPUT_MATRIX.size() / AMOUNT_THREAD * size_t(2);
 static const int ROUNDING_NUMBER = 5;
 
@@ -49,8 +49,12 @@ int GetAffinityMask(int threadIndex)
 	{
 		return 1;
 	}
+	
 	int cpuIndex = (threadIndex) / (AMOUNT_THREAD / AMOUNT_CPU);
-
+	if ((AMOUNT_THREAD % AMOUNT_CPU == 1) && (cpuIndex > 0))
+	{
+		cpuIndex--;
+	}
 	return int(pow(2.f, cpuIndex));
 }
 
@@ -70,7 +74,7 @@ INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 						_In_opt_ HINSTANCE hPrevInstance,
 						_In_ LPWSTR    lpCmdLine,
-						_In_ int       nCmdShow) 
+						_In_ int       nCmdShow)
 {
 	//инициализируем генератор случайных чисел
 	srand(time(NULL));
@@ -132,7 +136,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		ResumeThread(thread[i]);
 	}
 	
-	//ждем, пока все эти потоки завершатся
+	// ждем, пока все эти потоки завершатся
 	WaitForMultipleObjects(AMOUNT_THREAD, thread, TRUE, INFINITE);
 
 	timer.stop();
