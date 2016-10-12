@@ -10,7 +10,7 @@ namespace
 
 		auto pP = static_cast<CMultithreadMatrixCalculator::DataForThread*>(data);
 		CMultithreadMatrixCalculator* pCalc = static_cast<CMultithreadMatrixCalculator::DataForThread*>(data)->pCalc;
-		CMultithreadMatrixCalculator::DataForProgram *pData = &pCalc->m_data;
+		CMultithreadMatrixCalculator::DataForProgram *pData = pP->data;
 
 		//преобразуем полученные данные к типу структуры
 		//DataForProgram *pData = &m_data;
@@ -96,11 +96,8 @@ void CMultithreadMatrixCalculator::CreateThreads(const Matrix & matrix)
 	thread.resize(m_amountThread);
 	thrId.resize(m_amountThread);
 
-	DataForThread sourcesData;
-	sourcesData.data.input = m_data.input;
-	sourcesData.data.output.resize(sizeSourceMatrix, MatrixRow(sizeSourceMatrix));
-
 	m_dataForThread.resize(m_amountThread);
+	m_dataForProgram.resize(m_amountThread);
 	for (size_t i = 0; i < m_amountThread; i++)
 	{
 		//создаем потоки
@@ -111,15 +108,13 @@ void CMultithreadMatrixCalculator::CreateThreads(const Matrix & matrix)
 		endMatrix.x += SIZE_SECTION - 1;
 		endMatrix.y += SIZE_SECTION - 1;
 
+		m_dataForProgram[i].startMatrix = startMatrix;
+		m_dataForProgram[i].endMatrix = endMatrix;
+		m_dataForProgram[i].input = m_data.input;
+		m_dataForProgram[i].output.resize(SIZE_SECTION, MatrixRow(SIZE_SECTION));
+
 		m_dataForThread[i].pCalc = this;
-		m_dataForThread[i].data.startMatrix = startMatrix;
-		m_dataForThread[i].data.endMatrix = endMatrix;
-
-		//////////////////////////////////
-		// Record from source matrix
-		m_dataForThread[i].data.input = m_data.input;
-		m_dataForThread[i].data.output.resize(SIZE_SECTION, MatrixRow(SIZE_SECTION));
-
+		m_dataForThread[i].data = &m_dataForProgram[i];
 
 		//m_dataForThread[i].input = 
 		//////////////////////////////////

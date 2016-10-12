@@ -48,7 +48,7 @@ void RunProgram(int argc, char * argv[])
 	timer.stop();
 
 	double time = timer.elapsed().user * pow(10.f, -9.f) / amountThread;
-	std::cout << boost::timer::format(timer.elapsed(), ROUNDING_NUMBER, "%u") << std::endl;
+	std::cout << time << std::endl;
 
 }
 

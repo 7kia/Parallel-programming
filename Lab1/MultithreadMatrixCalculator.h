@@ -19,9 +19,9 @@ public:
 		Vector2UL endMatrix;
 	};
 
-	struct DataForThread
+		struct DataForThread
 	{
-		CMultithreadMatrixCalculator::DataForProgram data;
+		CMultithreadMatrixCalculator::DataForProgram* data;
 		CMultithreadMatrixCalculator* pCalc;
 	};
 
@@ -54,6 +54,7 @@ private:
 	size_t				m_amountCpu = 1;
 
 	std::vector<DataForThread> m_dataForThread;
+	std::vector<DataForProgram> m_dataForProgram;
 	std::vector<HANDLE> thread;
 	std::vector<DWORD>	thrId;
 
