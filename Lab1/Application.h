@@ -6,6 +6,7 @@
 #include <time.h> // for clock()
 
 #include "MatrixOperations.h"
+#include "MultithreadMatrixCalculator.h"
 
 #include <boost/chrono.hpp>
 #include <boost/timer/timer.hpp>
@@ -27,5 +28,4 @@ static const int AMOUNT_ARGUMENTS = 3;
 static const int SIZE_MATRIX = 3;
 
 void RunProgram(int argc, char * argv[]);
-void CompputeAdditionalMatrixAndPrint(const Matrix & matrix, std::ostream & strm);
 void CheckParametrs(int argc);
