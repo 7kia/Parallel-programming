@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include <tchar.h>
 #include <iostream>
-
+#include <Windows.h>
 
 
 // TODO: Установите здесь ссылки на дополнительные заголовки, требующиеся для программы

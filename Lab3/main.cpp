@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "main.h"
+#include "TaskExecutor.h"
 
 using namespace std;
 
@@ -44,12 +45,41 @@ bool CheckAdditionalParametr(int argc, _TCHAR * argv[])
 
 int main(int argc, _TCHAR* argv[])
 {
-	CheckParametrs(argc);
-
-	if (CheckAdditionalParametr(argc, argv))
+	try
 	{
-		PrintHelp();
-	}
+		setlocale(LC_ALL, "RUS");
 
+		CheckParametrs(argc);
+
+		if (CheckAdditionalParametr(argc, argv))
+		{
+			PrintHelp();
+		}
+
+		size_t amountProcess = size_t(atoi(argv[1]));
+		size_t amountIteration = size_t(atoi(argv[2]));
+
+		boost::timer::cpu_timer timer;
+
+		// TODO : delete the this and low comment
+		// the mutex will use in future
+		HANDLE mutex = CreateMutex(NULL, false, MUTEX_NAME);
+		CTaskExecutor taskExecutor(mutex);
+
+		timer.start();
+
+		cout << taskExecutor.GetPi(amountProcess, amountIteration) << std::endl;
+
+		timer.stop();
+
+		// TODO : see need comment low
+		double time = timer.elapsed().user * pow(10.f, -9.f);// / amountThread;
+		std::cout << time << std::endl;
+	}
+	catch (const std::exception & exception)
+	{
+		std::cout << exception.what() << std::endl;
+		return 1;
+	}
 	return 0;
 }
