@@ -14,7 +14,15 @@ CTaskExecutor::~CTaskExecutor()
 
 double CTaskExecutor::GetPi(size_t amountProcess, size_t amountIteration) const
 {
-	return 4.0 * CalculateHits(amountIteration) / amountIteration;
+	if (amountProcess == 1)
+	{
+		return 4.0 * CalculateHits(amountIteration) / amountIteration;
+
+	}
+
+	// TODO : not work for multi 
+	throw std::runtime_error("Not implementation");
+	return 0;
 }
 
 double CTaskExecutor::RandomNumber()
@@ -27,7 +35,7 @@ bool CTaskExecutor::InCircle(double x, double y)
 	return (x*x + y*y) <= 1;
 }
 
-int CTaskExecutor::CalculateHits(size_t numIter)
+size_t CTaskExecutor::CalculateHits(size_t numIter)
 {
 	size_t numHits = 0;
 	for (size_t index = 0; index < numIter; ++index)

@@ -12,7 +12,7 @@ public:
 private:
 	static double	RandomNumber();
 	static bool		InCircle(double x, double y);
-	static int		CalculateHits(size_t numIter);
+	static size_t		CalculateHits(size_t numIter);
 //////////////////////////////////////////////////////////////////////
 // Data
 private:

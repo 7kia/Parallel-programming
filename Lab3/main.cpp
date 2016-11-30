@@ -29,17 +29,14 @@ void PrintHelp()
 
 bool CheckAdditionalParametr(int argc, _TCHAR * argv[])
 {
-	if ((argc == AMOUNT_ARGUMENTS_WITH_ADDITIONAL))
+	if (argc == AMOUNT_ARGUMENTS_WITH_ADDITIONAL)
 	{
 		if (argv[3] == HELP_PARAMETER)
 		{
 			return true;
 		}
 	}
-	else
-	{
-		return false;
-	}
+	return false;
 }
 
 
@@ -56,6 +53,7 @@ int main(int argc, _TCHAR* argv[])
 			PrintHelp();
 		}
 
+		std::string s = argv[0];
 		size_t amountProcess = size_t(atoi(argv[1]));
 		size_t amountIteration = size_t(atoi(argv[2]));
 
@@ -69,11 +67,10 @@ int main(int argc, _TCHAR* argv[])
 		timer.start();
 
 		cout << taskExecutor.GetPi(amountProcess, amountIteration) << std::endl;
-
 		timer.stop();
 
 		// TODO : see need comment low
-		double time = timer.elapsed().user * pow(10.f, -9.f);// / amountThread;
+		double time = timer.elapsed().wall * pow(10.f, -9.f);// / amountThread;
 		std::cout << time << std::endl;
 	}
 	catch (const std::exception & exception)

@@ -30,6 +30,12 @@
     <ClInclude Include="TaskExecutor.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="WinNamedPipe.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="INamedPipe.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -39,6 +45,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TaskExecutor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WinNamedPipe.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="INamedPipe.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
