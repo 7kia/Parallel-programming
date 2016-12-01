@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <Windows.h>
+#include <ctime>
 
 class CTaskExecutor
 {
@@ -14,7 +15,6 @@ public:
 	{
 		size_t result;
 		size_t amountIterations;
-		size_t amountProcess;
 	};
 //////////////////////////////////////////////////////////////////////
 // Methods
@@ -27,6 +27,7 @@ private:
 	void							CreateThreads();
 	void							ResumeThreads();
 	void							PrintThreadInformation();
+	void							PrintFinalResult();
 //////////////////////////////////////////////////////////////////////
 // Static Methods
 public:

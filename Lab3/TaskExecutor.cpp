@@ -28,8 +28,8 @@ double CTaskExecutor::GetPi(size_t amountProcess
 	ResumeThreads();
 
 	PrintThreadInformation();
-	// TODO : not work for multi 
-	throw std::runtime_error("Not implementation");
+	PrintFinalResult();
+
 	return 0;
 }
 
@@ -80,8 +80,6 @@ void CTaskExecutor::CreateThreads()
 	{
 		auto & data = m_dataForThreads[index];
 		data.amountIterations = m_amountIteration / m_amountProcess;
-		data.amountProcess = m_amountProcess;
-
 
 		m_threads.push_back(CreateThread(NULL, 0, &ThreadFunction, &data, CREATE_SUSPENDED, NULL));
 		SetThreadAffinityMask(m_threads.back(), GetAffinityMask(m_amountProcess, index, m_amountCpu));
@@ -109,10 +107,25 @@ void CTaskExecutor::PrintThreadInformation()
 	}
 }
 
+void CTaskExecutor::PrintFinalResult()
+{
+	size_t amountIteration = 0;
+	
+	for (size_t index = 0; index < m_dataForThreads.size(); ++index)
+	{
+		amountIteration += m_dataForThreads[index].result;
+	}
+
+	std::cout << "Final result "
+		<< std::to_string(4.0 * amountIteration / m_amountIteration)
+		<< std::endl;
+}
+
 DWORD CTaskExecutor::ThreadFunction(LPVOID lpParam)
 {
 	auto pDataForThread = (SDataForThread*)(lpParam);
+	srand(time(NULL));
 
-	pDataForThread->result = CalculateHits(pDataForThread->amountIterations / pDataForThread->amountProcess);
+	pDataForThread->result = CalculateHits(pDataForThread->amountIterations);
 	return 0;
 }
