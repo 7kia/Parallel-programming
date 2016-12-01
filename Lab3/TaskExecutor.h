@@ -5,6 +5,8 @@
 #include <Windows.h>
 #include <ctime>
 
+#include "NamedPipe.h"
+
 class CTaskExecutor
 {
 public:
@@ -13,8 +15,9 @@ public:
 
 	struct SDataForThread
 	{
-		size_t result;
 		size_t amountIterations;
+		size_t idThread;
+		NamedPipe pipe;
 	};
 //////////////////////////////////////////////////////////////////////
 // Methods

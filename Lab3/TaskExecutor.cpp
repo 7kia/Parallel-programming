@@ -13,8 +13,8 @@ CTaskExecutor::~CTaskExecutor()
 }
 
 double CTaskExecutor::GetPi(size_t amountProcess
-							, size_t amountIteration
-							, size_t amountCpu)
+	, size_t amountIteration
+	, size_t amountCpu)
 {
 	m_amountProcess = amountProcess;
 	m_amountIteration = amountIteration;
@@ -55,8 +55,8 @@ size_t CTaskExecutor::CalculateHits(size_t numIter)
 
 // Evenly distributes indexes on processors
 int CTaskExecutor::GetAffinityMask(size_t amountThread
-									, size_t threadIndex
-									, size_t amountCpu)
+	, size_t threadIndex
+	, size_t amountCpu)
 {
 	int mask = 0x0000;
 
@@ -80,6 +80,7 @@ void CTaskExecutor::CreateThreads()
 	{
 		auto & data = m_dataForThreads[index];
 		data.amountIterations = m_amountIteration / m_amountProcess;
+		data.idThread = index;
 
 		m_threads.push_back(CreateThread(NULL, 0, &ThreadFunction, &data, CREATE_SUSPENDED, NULL));
 		SetThreadAffinityMask(m_threads.back(), GetAffinityMask(m_amountProcess, index, m_amountCpu));
@@ -100,9 +101,13 @@ void CTaskExecutor::PrintThreadInformation()
 {
 	for (size_t index = 0; index < m_dataForThreads.size(); ++index)
 	{
+		size_t result;
+		m_dataForThreads[index].pipe.ReadBytes(&result, sizeof(size_t));
+
+
 		std::cout << "Id thread " << std::to_string(index) << std::endl
 			<< "Amount iteration = " << std::to_string(m_dataForThreads[index].amountIterations) << std::endl
-			<< "Result(amount hit) = " << std::to_string(m_dataForThreads[index].result) << std::endl
+			<< "Result(amount hit) = " << std::to_string(result) << std::endl
 			<< std::endl;
 	}
 }
@@ -110,10 +115,12 @@ void CTaskExecutor::PrintThreadInformation()
 void CTaskExecutor::PrintFinalResult()
 {
 	size_t amountIteration = 0;
-	
+
 	for (size_t index = 0; index < m_dataForThreads.size(); ++index)
 	{
-		amountIteration += m_dataForThreads[index].result;
+		size_t add;
+		m_dataForThreads[index].pipe.ReadBytes(&add, sizeof(size_t));
+		amountIteration += add;
 	}
 
 	std::cout << "Final result "
@@ -124,8 +131,11 @@ void CTaskExecutor::PrintFinalResult()
 DWORD CTaskExecutor::ThreadFunction(LPVOID lpParam)
 {
 	auto pDataForThread = (SDataForThread*)(lpParam);
-	srand(time(NULL));
+	srand(time(NULL));// TODO : transfer to other place
 
-	pDataForThread->result = CalculateHits(pDataForThread->amountIterations);
+	pDataForThread->pipe.Open("\\\\.\\pipe\\", "NamedPipe" + std::to_string(pDataForThread->idThread));
+
+	size_t result = CalculateHits(pDataForThread->amountIterations);
+	pDataForThread->pipe.WriteBytes(&result, sizeof(size_t));
 	return 0;
 }
