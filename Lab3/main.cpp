@@ -53,7 +53,7 @@ int main(int argc, _TCHAR* argv[])
 			PrintHelp();
 		}
 
-		std::string s = argv[0];
+		std::string s = argv[0];// TODO : see need it
 		size_t amountProcess = size_t(atoi(argv[1]));
 		size_t amountIteration = size_t(atoi(argv[2]));
 
@@ -66,7 +66,10 @@ int main(int argc, _TCHAR* argv[])
 
 		timer.start();
 
-		cout << taskExecutor.GetPi(amountProcess, amountIteration) << std::endl;
+		cout << taskExecutor.GetPi(amountProcess
+				, amountIteration
+				, 4)// TODO : 4 - magic number 
+				<< std::endl;
 		timer.stop();
 
 		// TODO : see need comment low

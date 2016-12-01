@@ -12,14 +12,22 @@ CTaskExecutor::~CTaskExecutor()
 	CloseHandle(m_mutex);
 }
 
-double CTaskExecutor::GetPi(size_t amountProcess, size_t amountIteration) const
+double CTaskExecutor::GetPi(size_t amountProcess
+							, size_t amountIteration
+							, size_t amountCpu)
 {
-	if (amountProcess == 1)
+	m_amountProcess = amountProcess;
+	m_amountIteration = amountIteration;
+	m_amountCpu = amountCpu;
+	if (m_amountProcess == 1)
 	{
-		return 4.0 * CalculateHits(amountIteration) / amountIteration;
-
+		return 4.0 * CalculateHits(m_amountIteration) / m_amountIteration;
 	}
 
+	CreateThreads();
+	ResumeThreads();
+
+	PrintThreadInformation();
 	// TODO : not work for multi 
 	throw std::runtime_error("Not implementation");
 	return 0;
@@ -45,3 +53,66 @@ size_t CTaskExecutor::CalculateHits(size_t numIter)
 	return numHits;
 }
 
+// Evenly distributes indexes on processors
+int CTaskExecutor::GetAffinityMask(size_t amountThread
+									, size_t threadIndex
+									, size_t amountCpu)
+{
+	int mask = 0x0000;
+
+	if (amountThread / amountCpu == 0)
+	{
+		return 1;
+	}
+
+	int cpuIndex = (threadIndex) / (amountThread / amountCpu);
+	if ((amountThread % amountCpu == 1) && (cpuIndex > 0))
+	{
+		cpuIndex--;
+	}
+	return int(pow(2.f, cpuIndex));
+}
+
+void CTaskExecutor::CreateThreads()
+{
+	m_dataForThreads.resize(m_amountProcess);
+	for (size_t index = 0; index < m_amountProcess; ++index)
+	{
+		auto & data = m_dataForThreads[index];
+		data.amountIterations = m_amountIteration / m_amountProcess;
+		data.amountProcess = m_amountProcess;
+
+
+		m_threads.push_back(CreateThread(NULL, 0, &ThreadFunction, &data, CREATE_SUSPENDED, NULL));
+		SetThreadAffinityMask(m_threads.back(), GetAffinityMask(m_amountProcess, index, m_amountCpu));
+	}
+}
+
+void CTaskExecutor::ResumeThreads()
+{
+	for (auto & thread : m_threads)
+	{
+		ResumeThread(thread);
+	}
+	// ждем, пока все эти потоки завершатся
+	WaitForMultipleObjects(m_threads.size(), m_threads.data(), TRUE, INFINITE);
+}
+
+void CTaskExecutor::PrintThreadInformation()
+{
+	for (size_t index = 0; index < m_dataForThreads.size(); ++index)
+	{
+		std::cout << "Id thread " << std::to_string(index) << std::endl
+			<< "Amount iteration = " << std::to_string(m_dataForThreads[index].amountIterations) << std::endl
+			<< "Result(amount hit) = " << std::to_string(m_dataForThreads[index].result) << std::endl
+			<< std::endl;
+	}
+}
+
+DWORD CTaskExecutor::ThreadFunction(LPVOID lpParam)
+{
+	auto pDataForThread = (SDataForThread*)(lpParam);
+
+	pDataForThread->result = CalculateHits(pDataForThread->amountIterations / pDataForThread->amountProcess);
+	return 0;
+}
