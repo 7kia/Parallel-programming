@@ -55,5 +55,7 @@ private:
 	size_t							m_amountCpu = 1;
 	size_t							m_amountProcess = 1;
 	size_t							m_amountIteration = 1;
+
+	size_t							m_commonAmountIteration = 0;
 };
 

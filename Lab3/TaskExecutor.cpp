@@ -112,6 +112,7 @@ void CTaskExecutor::PrintThreadInformation()
 		
 		m_dataForThreads[index].pipe.Open(m_dataForThreads[index].namePipe);
 		m_dataForThreads[index].pipe.ReadBytes(&result, sizeof(size_t));
+		m_commonAmountIteration += result;
 
 		std::cout << "Id thread " << std::to_string(index) << std::endl
 			<< "Amount iteration = " << std::to_string(m_dataForThreads[index].amountIterations) << std::endl
@@ -122,17 +123,8 @@ void CTaskExecutor::PrintThreadInformation()
 
 void CTaskExecutor::PrintFinalResult()
 {
-	size_t amountIteration = 0;
-
-	for (size_t index = 0; index < m_dataForThreads.size(); ++index)
-	{
-		size_t add;
-		m_dataForThreads[index].pipe.ReadBytes(&add, sizeof(size_t));
-		amountIteration += add;
-	}
-
 	std::cout << "Final result "
-		<< std::to_string(4.0 * amountIteration / m_amountIteration)
+		<< std::to_string(4.0 * m_commonAmountIteration / m_amountIteration)
 		<< std::endl;
 }
 
