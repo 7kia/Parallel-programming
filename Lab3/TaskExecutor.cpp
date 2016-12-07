@@ -58,14 +58,14 @@ int CTaskExecutor::GetAffinityMask(size_t amountThread
 	, size_t threadIndex
 	, size_t amountCpu)
 {
-	int mask = 0x0000;
+	//int mask = 0x0000; // TODO : see need it
 
 	if (amountThread / amountCpu == 0)
 	{
 		return 1;
 	}
 
-	int cpuIndex = (threadIndex) / (amountThread / amountCpu);
+	size_t cpuIndex = (threadIndex) / (amountThread / amountCpu);
 	if ((amountThread % amountCpu == 1) && (cpuIndex > 0))
 	{
 		cpuIndex--;
@@ -95,7 +95,7 @@ void CTaskExecutor::ResumeThreads()
 		ResumeThread(thread);
 	}
 	// ждем, пока все эти потоки завершатся
-	WaitForMultipleObjects(m_threads.size(), m_threads.data(), TRUE, INFINITE);
+	WaitForMultipleObjects(DWORD(m_threads.size()), m_threads.data(), TRUE, INFINITE);
 }
 
 void CTaskExecutor::PrintThreadInformation()
@@ -125,7 +125,7 @@ void CTaskExecutor::PrintFinalResult()
 DWORD CTaskExecutor::ThreadFunction(LPVOID lpParam)
 {
 	auto pDataForThread = (SDataForThread*)(lpParam);
-	srand(time(NULL));// TODO : transfer to other place
+	srand(UINT(time(__int64(0))));// TODO : transfer to other place
 
 	pDataForThread->namePipe = "Pipe" + std::to_string(pDataForThread->idThread) + ".txt";
 	pDataForThread->pipe.Open(pDataForThread->namePipe);

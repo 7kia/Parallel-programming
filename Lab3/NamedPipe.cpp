@@ -47,9 +47,9 @@ NamedPipe::~NamedPipe(void)
 void NamedPipe::ReadBytes(void * buffer, size_t size)
 {
 	DWORD dwRead;
-	BOOL bSuccess = ReadFile(m_hPipe, buffer, size, &dwRead, NULL);
+	BOOL bSuccess = ReadFile(m_hPipe, buffer, DWORD(size), &dwRead, NULL);
 
-	if (!bSuccess || dwRead == 0)//
+	if (!bSuccess || (dwRead == 0))
 	{
 		throw std::runtime_error("Read error");
 	}
@@ -58,10 +58,8 @@ void NamedPipe::ReadBytes(void * buffer, size_t size)
 
 void NamedPipe::WriteBytes(const void * buffer, size_t size)
 {
-	DWORD dwRead = sizeof(size_t);
 	DWORD dwWritten;
-
-	BOOL bSuccess = WriteFile(m_hPipe, buffer, size, &dwWritten, NULL);
+	BOOL bSuccess = WriteFile(m_hPipe, buffer, DWORD(size), &dwWritten, NULL);
 
 	if (!bSuccess)
 	{

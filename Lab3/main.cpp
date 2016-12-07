@@ -69,13 +69,13 @@ int main(int argc, _TCHAR* argv[])
 
 		cout << taskExecutor.GetPi(amountProcess
 				, amountIteration
-				, 4)// TODO : 4 - magic number 
+				, AMOUNT_CPU)// TODO : 4 - magic number 
 				<< std::endl;
 		timer.stop();
 
 		// TODO : see need comment low
 		double time = timer.elapsed().wall * pow(10.f, -9.f);// / amountThread;
-		std::cout << time << std::endl;
+		std::cout << "time = "<< time << std::endl;
 	}
 	catch (const std::exception & exception)
 	{

@@ -22,5 +22,8 @@ static const std::string HELP_PARAMETER = "\\?";
 static const int AMOUNT_ARGUMENTS = 3;
 static const int AMOUNT_ARGUMENTS_WITH_ADDITIONAL = AMOUNT_ARGUMENTS + 1;
 
+static const size_t AMOUNT_CPU = 3;
+
+
 // Name for handels
 static const LPTSTR MUTEX_NAME = "\\.\\pipe\\TaskExecutorPipe";
