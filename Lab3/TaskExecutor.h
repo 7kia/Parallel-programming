@@ -17,7 +17,7 @@ public:
 	{
 		size_t amountIterations;
 		size_t idThread;
-		std::string nameExe;
+		std::string namePipe;
 		NamedPipe pipe;
 	};
 //////////////////////////////////////////////////////////////////////

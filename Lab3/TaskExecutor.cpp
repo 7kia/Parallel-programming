@@ -87,7 +87,7 @@ void CTaskExecutor::CreateThreads()
 		auto & data = m_dataForThreads[index];
 		data.amountIterations = m_amountIteration / m_amountProcess;
 		data.idThread = index;
-		data.nameExe = exePath;
+		data.namePipe = exePath;
 
 		m_threads.push_back(CreateThread(NULL, 0, &ThreadFunction, &data, CREATE_SUSPENDED, NULL));
 		SetThreadAffinityMask(m_threads.back(), GetAffinityMask(m_amountProcess, index, m_amountCpu));
@@ -108,9 +108,10 @@ void CTaskExecutor::PrintThreadInformation()
 {
 	for (size_t index = 0; index < m_dataForThreads.size(); ++index)
 	{
-		std::string result;
-		m_dataForThreads[index].pipe.ReadBytes(&result, result.size());
-
+		size_t result;
+		
+		m_dataForThreads[index].pipe.Open(m_dataForThreads[index].namePipe);
+		m_dataForThreads[index].pipe.ReadBytes(&result, sizeof(size_t));
 
 		std::cout << "Id thread " << std::to_string(index) << std::endl
 			<< "Amount iteration = " << std::to_string(m_dataForThreads[index].amountIterations) << std::endl
@@ -141,13 +142,15 @@ DWORD CTaskExecutor::ThreadFunction(LPVOID lpParam)
 	srand(time(NULL));// TODO : transfer to other place
 
 	//pDataForThread->pipe.Open("Pipe" + std::to_string(pDataForThread->idThread) + ".txt");
-	pDataForThread->pipe.Open("Pipe" + std::to_string(pDataForThread->idThread) + ".txt");
+	pDataForThread->namePipe = "Pipe" + std::to_string(pDataForThread->idThread) + ".txt";
+	pDataForThread->pipe.Open(pDataForThread->namePipe);
 
 	size_t result = CalculateHits(pDataForThread->amountIterations);
 	//pDataForThread->pipe.ReadBytes(&result, sizeof(size_t));
 	//char *buffer = reinterpret_cast<char *>(result);
-	auto stringPresentation = std::to_string(result);
-	const char *buffer = stringPresentation.data();
-	pDataForThread->pipe.WriteBytes(buffer, stringPresentation.size());
+	//auto stringPresentation = std::to_string(result);
+	//const char *buffer = stringPresentation.data();
+	pDataForThread->pipe.WriteBytes(&result, sizeof(size_t));
+	pDataForThread->pipe.Close();
 	return 0;
 }

@@ -198,7 +198,7 @@ void NamedPipe::ReadBytes(void * buffer, size_t size)
 	DWORD dwRead;
 	BOOL bSuccess = ReadFile(m_hPipe, buffer, size, &dwRead, NULL);
 
-	if (!bSuccess || dwRead == 0)
+	if (!bSuccess || dwRead == 0)//
 	{
 		throw std::runtime_error("Read error");
 	}
