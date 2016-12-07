@@ -44,6 +44,7 @@ int main(int argc, _TCHAR* argv[])
 {
 	try
 	{
+
 		setlocale(LC_ALL, "RUS");
 
 		CheckParametrs(argc);

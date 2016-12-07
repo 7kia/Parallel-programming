@@ -13,8 +13,8 @@ CTaskExecutor::~CTaskExecutor()
 }
 
 double CTaskExecutor::GetPi(size_t amountProcess
-	, size_t amountIteration
-	, size_t amountCpu)
+						, size_t amountIteration
+						, size_t amountCpu)
 {
 	m_amountProcess = amountProcess;
 	m_amountIteration = amountIteration;
@@ -75,11 +75,6 @@ int CTaskExecutor::GetAffinityMask(size_t amountThread
 
 void CTaskExecutor::CreateThreads()
 {
-	_TCHAR exePath[MAX_PATH];
-	if (GetModuleFileName(NULL, exePath, MAX_PATH) == 0)
-	{
-		throw std::runtime_error("GetModuleFileName failed. Error " + GetLastError());
-	}
 
 	m_dataForThreads.resize(m_amountProcess);
 	for (size_t index = 0; index < m_amountProcess; ++index)
@@ -87,7 +82,6 @@ void CTaskExecutor::CreateThreads()
 		auto & data = m_dataForThreads[index];
 		data.amountIterations = m_amountIteration / m_amountProcess;
 		data.idThread = index;
-		data.namePipe = exePath;
 
 		m_threads.push_back(CreateThread(NULL, 0, &ThreadFunction, &data, CREATE_SUSPENDED, NULL));
 		SetThreadAffinityMask(m_threads.back(), GetAffinityMask(m_amountProcess, index, m_amountCpu));
@@ -133,15 +127,11 @@ DWORD CTaskExecutor::ThreadFunction(LPVOID lpParam)
 	auto pDataForThread = (SDataForThread*)(lpParam);
 	srand(time(NULL));// TODO : transfer to other place
 
-	//pDataForThread->pipe.Open("Pipe" + std::to_string(pDataForThread->idThread) + ".txt");
 	pDataForThread->namePipe = "Pipe" + std::to_string(pDataForThread->idThread) + ".txt";
 	pDataForThread->pipe.Open(pDataForThread->namePipe);
 
 	size_t result = CalculateHits(pDataForThread->amountIterations);
-	//pDataForThread->pipe.ReadBytes(&result, sizeof(size_t));
-	//char *buffer = reinterpret_cast<char *>(result);
-	//auto stringPresentation = std::to_string(result);
-	//const char *buffer = stringPresentation.data();
+
 	pDataForThread->pipe.WriteBytes(&result, sizeof(size_t));
 	pDataForThread->pipe.Close();
 	return 0;

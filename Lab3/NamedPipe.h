@@ -20,11 +20,8 @@ class NamedPipe
 {
 public:
 	NamedPipe();// TODO : see need all constructors?
-	NamedPipe(HANDLE pipe);
-	NamedPipe(const std::string& name);
 	~NamedPipe();
 
-	static const size_t BUFFFER_SIZE = 4096;
 //////////////////////////////////////////////////////////////////////
 // Methods
 public:
@@ -34,10 +31,6 @@ public:
 	void			Open(const std::string& name);
 	void			Close();// TODO : see need the method separately
 
-protected:
-	//void			InternalReadBytes(void* buf, size_t size);
-	//void			InternalWriteBytes(const void* buf, size_t size);
-	void			InternalFlush();// TODO : see need
 //////////////////////////////////////////////////////////////////////
 // Data
 private:
