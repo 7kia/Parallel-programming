@@ -24,17 +24,41 @@ NamedPipe::NamedPipe(HANDLE pipe)
 {
 }
 
-NamedPipe::NamedPipe(const std::string& prefix, const std::string& name)
+NamedPipe::NamedPipe(const std::string& name) 
 {
-	Open(prefix, name);// TODO: see need replace
+	Open(name);// TODO: see need replace
 }
 
-void NamedPipe::Open(const std::string& prefix, const std::string& name)
+void NamedPipe::Open(const std::string& name) 
 {
-	m_name = prefix;
-	m_name.append(name);
+	m_name = name;
 
-	m_hPipe = CreateNamedPipe
+	///*
+		m_hPipe = CreateFile(
+		m_name.data(),
+		GENERIC_ALL,//GENERIC_READ
+		0,
+		NULL,
+		OPEN_EXISTING,
+		FILE_ATTRIBUTE_READONLY,
+		NULL);
+
+	//*/
+
+	/*
+		m_hPipe = CreateNamedPipe(
+		(LPSTR)m_name.data(),   // pipe name 
+		PIPE_ACCESS_DUPLEX,       // разрешен доступ на чтение и запись 
+		PIPE_TYPE_BYTE |   //читаем побайтово
+		PIPE_WAIT,                // блокирующий режим 
+		PIPE_UNLIMITED_INSTANCES, // число экземпл€ров канала неограниченно  
+		BUFFER_PIPE_SIZE,                  // размер буфера исход€щих сообщений 
+		BUFFER_PIPE_SIZE,                  // размер буфера вход€щих сообщений 
+		0,                        // тайм-аут ожидани€ (0=бесконечно) 
+		NULL);
+
+	//*/
+		/*CreateNamedPipe
 	(
 		(LPSTR)m_name.data()						// pipe name
 		, PIPE_ACCESS_DUPLEX | FILE_FLAG_OVERLAPPED	// read/write access
@@ -45,14 +69,15 @@ void NamedPipe::Open(const std::string& prefix, const std::string& name)
 		, 0											// client time-out 
 		, NULL										// default security attribute 
 	);
+	*/
 
 	if (m_hPipe == INVALID_HANDLE_VALUE)
 	{
-		THROW_LAST_ERROR("CreateNamedPipe failed");
+		THROW_LAST_ERROR("Error for open pipe " + m_name);
 	}
 }
 
-
+/*
 void  NamedPipe::InternalReadBytes(void* buf, size_t size)
 {
 	DWORD cbBytesRead = 0;
@@ -81,15 +106,17 @@ void  NamedPipe::InternalReadBytes(void* buf, size_t size)
 
 }
 
+*/
+
 void NamedPipe::InternalFlush()
 {
 	FlushFileBuffers(m_hPipe);
 }
 
-void  NamedPipe::InternalWriteBytes(const void* buf, size_t size)
+/*void  NamedPipe::InternalWriteBytes(const void* buf, size_t size)
 {
 	DWORD cbWritten;
-	BOOL fSuccess = false;
+	BOOL fSuccess = FALSE;
 
 	fSuccess = WriteFile
 	(
@@ -106,6 +133,9 @@ void  NamedPipe::InternalWriteBytes(const void* buf, size_t size)
 	}
 }
 
+
+*/
+
 NamedPipe::~NamedPipe(void)
 {
 	Close();
@@ -113,6 +143,33 @@ NamedPipe::~NamedPipe(void)
 
 void NamedPipe::ReadBytes(void * buffer, size_t size)
 {
+	/*
+	BOOL fSuccess = FALSE;
+	DWORD dwMode = PIPE_READMODE_MESSAGE;
+	DWORD cbBytesRead = 0;
+	size_t readValue = 0;
+
+	fSuccess = ReadFile(
+		m_hPipe,        // handle to pipe 
+		&readValue,    // buffer to receive data 
+		sizeof(size_t), // size of buffer 
+		&cbBytesRead, // number of bytes read 
+		NULL);        // not overlapped I/O 
+	/*
+		fSuccess = SetNamedPipeHandleState(
+		m_hPipe,    // pipe handle 
+		&dwMode,  // new pipe mode 
+		NULL,     // don't set maximum bytes 
+		NULL);    // don't set maximum time 
+
+	
+
+	if (!fSuccess)
+	{
+		THROW_LAST_ERROR("SetNamedPipeHandleState failed.");
+	}
+	*/
+	/*
 	DWORD cbBytesRead = 0;
 	BOOL fSuccess = false;
 	// Read from the pipe. 
@@ -136,26 +193,50 @@ void NamedPipe::ReadBytes(void * buffer, size_t size)
 			THROW_LAST_ERROR("read failed");
 		}
 	}
+	//*/
+	//CHAR chBuf[BUFFFER_SIZE];
+	DWORD dwRead;
+	BOOL bSuccess = ReadFile(m_hPipe, buffer, size, &dwRead, NULL);
+
+	if (!bSuccess || dwRead == 0)
+	{
+		throw std::runtime_error("Read error");
+	}
 
 }
 
 void NamedPipe::WriteBytes(const void * buffer, size_t size)
 {
-	DWORD cbWritten;// TODO : check correctness
-	BOOL fSuccess = false;
+	//InternalWriteBytes(buffer, size);
 
-	fSuccess = WriteFile
-	(
-			m_hPipe		// handle to pipe
-		,	buffer		// buffer to write from
-		,	size		// number of bytes to write
-		,	&cbWritten	// number of bytes written
-		,	NULL		// not overlapped I/O 
-	);        
+	/*
+	LPDWORD
+	cbToWrite = (lstrlen(lpvMessage) + 1) * sizeof(TCHAR);
+	_tprintf(TEXT("Sending %d byte message: \"%s\"\n"), cbToWrite, lpvMessage);
 
-	if (!fSuccess || (size != cbWritten))
+	fSuccess = WriteFile(
+		hPipe,                  // pipe handle 
+		lpvMessage,             // message 
+		size,              // message length 
+		&buffer,             // bytes written 
+		NULL);                  // not overlapped 
+
+	if (!fSuccess)
 	{
-		THROW_LAST_ERROR("WriteFile failed");
+		_tprintf(TEXT("WriteFile to pipe failed. GLE=%d\n"), GetLastError());
+		return -1;
+	}
+	*/
+	//CHAR chBuf[BUFFFER_SIZE];
+	DWORD dwRead = sizeof(size_t);
+	DWORD dwWritten;
+
+
+	BOOL bSuccess = WriteFile(m_hPipe, buffer, size, &dwWritten, NULL);
+
+	if (!bSuccess)
+	{
+		throw std::runtime_error("Read error");
 	}
 }
 
