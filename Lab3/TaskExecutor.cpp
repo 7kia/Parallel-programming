@@ -127,7 +127,7 @@ DWORD CTaskExecutor::ThreadFunction(LPVOID lpParam)
 	auto pDataForThread = (SDataForThread*)(lpParam);
 	srand(UINT(time(__int64(0))));// TODO : transfer to other place
 
-	pDataForThread->namePipe = "Pipe" + std::to_string(pDataForThread->idThread) + ".txt";
+	pDataForThread->namePipe = "\\\\.\Pipe\\" + std::to_string(pDataForThread->idThread);
 	pDataForThread->pipe.Open(pDataForThread->namePipe);
 
 	size_t result = CalculateHits(pDataForThread->amountIterations);
