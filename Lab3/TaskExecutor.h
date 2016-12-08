@@ -5,7 +5,7 @@
 #include <Windows.h>
 #include <ctime>
 #include <string>
-#include "NamedPipe.h"
+#include "Pipe.h"
 
 class CTaskExecutor
 {
@@ -18,7 +18,7 @@ public:
 		size_t amountIterations;
 		size_t idThread;
 		std::string namePipe;
-		NamedPipe pipe;
+		CPipe pipe;
 	};
 //////////////////////////////////////////////////////////////////////
 // Methods

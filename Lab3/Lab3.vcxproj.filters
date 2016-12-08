@@ -30,7 +30,7 @@
     <ClInclude Include="TaskExecutor.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="NamedPipe.h">
+    <ClInclude Include="Pipe.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -44,7 +44,7 @@
     <ClCompile Include="TaskExecutor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="NamedPipe.cpp">
+    <ClCompile Include="Pipe.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

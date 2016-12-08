@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "NamedPipe.h"
+#include "Pipe.h"
 #include <sstream>
 
 #define THROW_LAST_ERROR(e)									\
@@ -14,12 +14,12 @@
 //err.clear();											\/// /TODO : see need the line
 
 
-NamedPipe::NamedPipe()
+CPipe::CPipe()
 	: m_hPipe(NULL)
 {
 }
 
-void NamedPipe::Open(const std::string& name) 
+void CPipe::Open(const std::string& name) 
 {
 	m_name = name;
 
@@ -39,12 +39,12 @@ void NamedPipe::Open(const std::string& name)
 	}
 }
 
-NamedPipe::~NamedPipe(void)
+CPipe::~CPipe(void)
 {
 	Close();
 }
 
-void NamedPipe::ReadBytes(void * buffer, size_t size)
+void CPipe::ReadBytes(void * buffer, size_t size)
 {
 	DWORD dwRead;
 	BOOL bSuccess = ReadFile(m_hPipe, buffer, DWORD(size), &dwRead, NULL);
@@ -56,7 +56,7 @@ void NamedPipe::ReadBytes(void * buffer, size_t size)
 
 }
 
-void NamedPipe::WriteBytes(const void * buffer, size_t size)
+void CPipe::WriteBytes(const void * buffer, size_t size)
 {
 	DWORD dwWritten;
 	BOOL bSuccess = WriteFile(m_hPipe, buffer, DWORD(size), &dwWritten, NULL);
@@ -67,7 +67,7 @@ void NamedPipe::WriteBytes(const void * buffer, size_t size)
 	}
 }
 
-void NamedPipe::Close()
+void CPipe::Close()
 {
 	DisconnectNamedPipe(m_hPipe);
 	CloseHandle(m_hPipe); //May throw an exception if a debugger is attached to the process!

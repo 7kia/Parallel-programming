@@ -16,11 +16,11 @@ An interface for using namedpipes in a crossplatform way
 */
 
 // TODO : rename
-class NamedPipe 
+class CPipe 
 {
 public:
-	NamedPipe();// TODO : see need all constructors?
-	~NamedPipe();
+	CPipe();// TODO : see need all constructors?
+	~CPipe();
 
 //////////////////////////////////////////////////////////////////////
 // Methods
