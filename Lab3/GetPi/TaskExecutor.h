@@ -8,6 +8,7 @@
 #include <iostream>
 
 #include "../Pipe.h"
+#include "../Postman.h"
 
 class CTaskExecutor
 {
@@ -24,7 +25,7 @@ public:
 	double							GetPi(size_t amountIteration, size_t numberProcess);
 private:
 
-	static void							PrintFinalResult(size_t amountIteration
+	static std::string							GetFinalMessage(size_t amountIteration
 													, size_t numberProcess
 													, double result);
 //////////////////////////////////////////////////////////////////////

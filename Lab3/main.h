@@ -8,6 +8,7 @@
 #include <boost/timer/timer.hpp>
 #include <boost/algorithm/string.hpp>
 
+#include <vector>
 
 
 static const std::string MESSAGE_INCORRECT_AMOUNT_ARGUMENTS = "Incorrect amount arguments! Must will be ";
@@ -27,3 +28,13 @@ static const size_t AMOUNT_CPU = 3;
 
 // Name for handels
 static const LPTSTR MUTEX_NAME = "\\.\\pipe\\TaskExecutorPipe";
+
+struct SDataProcesses
+{
+	std::vector<STARTUPINFO> startUpInfos;
+	std::vector<PROCESS_INFORMATION> processInformations;
+	HANDLE hPipe;
+	std::vector<HANDLE> handles;
+	size_t processesNumber;
+	size_t amountIteration;
+};

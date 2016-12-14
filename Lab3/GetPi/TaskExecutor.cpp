@@ -13,7 +13,7 @@ double CTaskExecutor::GetPi(size_t amountIteration, size_t numberProcess)
 {
 	double result =  4.0 * CalculateHits(amountIteration) / amountIteration;
 
-	PrintFinalResult(numberProcess, amountIteration, result);
+	CPostman::SendPackage(GetFinalMessage(numberProcess, amountIteration, result), numberProcess);
 
 	return result;
 }
@@ -39,14 +39,14 @@ size_t CTaskExecutor::CalculateHits(size_t numIter)
 }
 
 // Evenly distributes indexes on processors
-void CTaskExecutor::PrintFinalResult(size_t amountIteration
+std::string CTaskExecutor::GetFinalMessage(size_t amountIteration
 									, size_t numberProcess
 									, double result)
 {
+	std::string message = "Id thread "
+		+ std::to_string(numberProcess) + "\n"
+		+ "Amount iteration = " + std::to_string(amountIteration) + "\n"
+		+ "Result = " + std::to_string(result) + "\n";
 
-
-	std::cout << "Id thread " << std::to_string(numberProcess) << std::endl
-			<< "Amount iteration = " << std::to_string(amountIteration) << std::endl
-			<< "Result = " << result << std::endl;
-	
+	return message;
 }

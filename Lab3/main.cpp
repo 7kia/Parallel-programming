@@ -1,9 +1,12 @@
 #include "stdafx.h"
 #include "main.h"
+#include "Postman.h"
 #include "TaskExecutor.h"
 
 using namespace std;
 
+namespace
+{
 void CheckParametrs(int argc)
 {
 	if ((argc != AMOUNT_ARGUMENTS) && (argc != AMOUNT_ARGUMENTS_WITH_ADDITIONAL))
@@ -40,6 +43,76 @@ bool CheckAdditionalParametr(int argc, _TCHAR * argv[])
 }
 
 
+	void WaitMessages(SDataProcesses &info)
+	{
+		std::vector<std::string> messages;
+		CPostman::WaitPackage(messages, info.processesNumber);
+
+
+		for (auto const &message : messages)
+		{
+			std::cout << message << std::endl;
+		}
+
+	}
+
+
+
+	std::string GetCommandLineArguments(std::string exeName, size_t amountIteration, size_t processesNumber)
+	{
+		std::string name = exeName + ".exe "
+			+ std::to_string(amountIteration) + " "
+			+ std::to_string(processesNumber);
+		return name;
+	}
+
+	void SettingProcess(STARTUPINFO &si)
+	{
+		si.dwFlags = STARTF_USESIZE | STARTF_USESHOWWINDOW;
+		si.dwXSize = 500;
+		si.dwYSize = 300;
+		si.wShowWindow = SW_SHOW;
+	}
+
+	void RunProcess(SDataProcesses &info)
+	{
+		for (size_t i = 0; i != info.processesNumber; ++i)
+		{
+			STARTUPINFO si;
+			PROCESS_INFORMATION pi;
+			ZeroMemory(&si, sizeof(si));
+			std::string commandLine = GetCommandLineArguments("GetPi", info.amountIteration, info.processesNumber);
+
+			SettingProcess(si);
+
+			if (!CreateProcess(NULL, (LPSTR)commandLine.data(), NULL, NULL, TRUE, CREATE_NEW_CONSOLE, NULL, NULL, &si, &pi))
+			{
+				std::cout << "Could't create a process. Program will continue to work without it" << std::endl;
+				continue;
+			}
+
+
+			info.startUpInfos.push_back(si);
+			info.processInformations.push_back(pi);
+			info.handles.push_back(pi.hThread);
+		}
+
+
+
+	}
+
+	void CloseProcesses(SDataProcesses &info)
+	{
+		for (size_t i = 0; i != info.processesNumber; ++i)
+		{
+			CloseHandle(info.processInformations[i].hProcess);
+			CloseHandle(info.processInformations[i].hThread);
+		}
+	}
+
+}
+
+
 int main(int argc, _TCHAR* argv[])
 {
 	try
@@ -54,33 +127,19 @@ int main(int argc, _TCHAR* argv[])
 			PrintHelp();
 		}
 
-		std::string s = argv[0];// TODO : see need it
-		size_t amountProcess = size_t(atoi(argv[1]));
-		size_t amountIteration = size_t(atoi(argv[2]));
+		SDataProcesses info;
+		info.processesNumber = atoi(argv[1]);
+		info.amountIteration = atoi(argv[2]);
+		RunProcess(info);
 
-		boost::timer::cpu_timer timer;
-
-		// TODO : delete the this and low comment
-		// the mutex will use in future
-		HANDLE mutex = CreateMutex(NULL, false, MUTEX_NAME);
-		CTaskExecutor taskExecutor(mutex);
-
-		timer.start();
-
-		cout << taskExecutor.GetPi(amountProcess
-				, amountIteration
-				, AMOUNT_CPU)// TODO : 4 - magic number 
-				<< std::endl;
-		timer.stop();
-
-		// TODO : see need comment low
-		double time = timer.elapsed().wall * pow(10.f, -9.f);// / amountThread;
-		std::cout << "time = "<< time << std::endl;
+		WaitMessages(info);
+		CloseProcesses(info);
 	}
 	catch (const std::exception & exception)
 	{
 		std::cout << exception.what() << std::endl;
 		return 1;
 	}
+	system("pause");
 	return 0;
 }

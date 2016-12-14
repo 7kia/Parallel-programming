@@ -45,6 +45,7 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
+	system("pause");
 	return 0;
 }
 
