@@ -2,11 +2,11 @@
 
 #include <string>
 #include <vector>
-#include "Pipe.h"
+#include "NamedPipe.h"
 
 class CPostman
 {
 public:
-	static void SendPackage(std::string const &message, size_t indexProcess);
+	static void SendPackage(std::string const &message);
 	static void WaitPackage(std::vector<std::string> &messages, size_t amountMessages);
 };

@@ -15,10 +15,6 @@ class CTaskExecutor
 public:
 	CTaskExecutor();
 	~CTaskExecutor();
-
-	
-		
-	
 //////////////////////////////////////////////////////////////////////
 // Methods
 public:

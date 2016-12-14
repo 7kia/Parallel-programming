@@ -22,19 +22,3 @@ static const std::string HELP_PARAMETER = "\\?";
 // @param 4(addirional) - amount iteration
 static const int AMOUNT_ARGUMENTS = 3;
 static const int AMOUNT_ARGUMENTS_WITH_ADDITIONAL = AMOUNT_ARGUMENTS + 1;
-
-static const size_t AMOUNT_CPU = 3;
-
-
-// Name for handels
-static const LPTSTR MUTEX_NAME = "\\.\\pipe\\TaskExecutorPipe";
-
-struct SDataProcesses
-{
-	std::vector<STARTUPINFO> startUpInfos;
-	std::vector<PROCESS_INFORMATION> processInformations;
-	HANDLE hPipe;
-	std::vector<HANDLE> handles;
-	size_t processesNumber;
-	size_t amountIteration;
-};

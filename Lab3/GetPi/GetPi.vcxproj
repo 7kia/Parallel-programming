@@ -146,6 +146,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\NamedPipe.h" />
     <ClInclude Include="..\Pipe.h" />
     <ClInclude Include="..\Postman.h" />
     <ClInclude Include="main.h" />
@@ -154,6 +155,7 @@
     <ClInclude Include="TaskExecutor.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\NamedPipe.cpp" />
     <ClCompile Include="..\Pipe.cpp" />
     <ClCompile Include="..\Postman.cpp" />
     <ClCompile Include="main.cpp" />

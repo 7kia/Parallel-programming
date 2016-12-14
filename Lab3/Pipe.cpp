@@ -1,18 +1,6 @@
 #include "stdafx.h"
 
 #include "Pipe.h"
-#include <sstream>
-
-#define THROW_LAST_ERROR(e)									\
-{															\
-	int error = GetLastError();								\
-	std::stringstream err;									\
-	err << e << ", GLE=" << error;							\
-	throw std::runtime_error(err.str().data());				\
-}
-// Last line to the /\ macros \\
-//err.clear();											\/// /TODO : see need the line
-
 
 CPipe::CPipe()
 	: m_hPipe(NULL)
@@ -23,14 +11,14 @@ void CPipe::Open(const std::string& name)
 {
 	m_name = name;
 
-		m_hPipe = CreateFile(
-		m_name.data(),
-		GENERIC_ALL,//GENERIC_READ
-		0,
-		NULL,
-		OPEN_EXISTING,
-		FILE_ATTRIBUTE_READONLY,
-		NULL);
+	m_hPipe = CreateFile(
+				m_name.data(),
+				GENERIC_ALL,//GENERIC_READ
+				0,
+				NULL,
+				OPEN_EXISTING,
+				FILE_ATTRIBUTE_READONLY,
+				NULL);
 
 
 	if (m_hPipe == INVALID_HANDLE_VALUE)
@@ -69,7 +57,6 @@ void CPipe::WriteBytes(const void * buffer, size_t size)
 
 void CPipe::Close()
 {
-	DisconnectNamedPipe(m_hPipe);
 	CloseHandle(m_hPipe); //May throw an exception if a debugger is attached to the process!
 	m_hPipe = nullptr;
 }
