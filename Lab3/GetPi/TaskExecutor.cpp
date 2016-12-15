@@ -15,7 +15,7 @@ double CTaskExecutor::GetPi(size_t amountIteration, size_t numberProcess)
 
 	double result =  4.0 * CalculateHits(amountIteration) / amountIteration;
 
-	CPostman::SendPackage(GetFinalMessage(amountIteration, numberProcess, result));
+	CPostman::SendPackage(GetFinalMessage(amountIteration, numberProcess, result), numberProcess);
 
 	return result;
 }
