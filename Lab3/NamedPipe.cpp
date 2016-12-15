@@ -23,7 +23,7 @@ void CNamedPipe::Open(const std::string& name)
 		PIPE_UNLIMITED_INSTANCES, // число экземпл€ров канала неограниченно  
 		BUFFER_PIPE_SIZE,                  // размер буфера исход€щих сообщений 
 		BUFFER_PIPE_SIZE,                  // размер буфера вход€щих сообщений 
-		0,                        // тайм-аут ожидани€ (0=бесконечно) 
+		TIME_OUT,                        // тайм-аут ожидани€ (0=бесконечно) 
 		NULL);
 
 

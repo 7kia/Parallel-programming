@@ -10,13 +10,13 @@ void CProcessRunner::Run(size_t processesNumber, size_t amountIteration)
 	m_info.processesNumber = processesNumber;
 	m_info.amountIteration = amountIteration;
 
-	for (size_t i = 0; i != m_info.processesNumber; ++i)
+	for (size_t index = 0; index != m_info.processesNumber; ++index)
 	{
 		STARTUPINFO si;
 		PROCESS_INFORMATION pi;
 		ZeroMemory(&si, sizeof(si));
 		ZeroMemory(&pi, sizeof(pi));
-		std::string commandLine = GetCommandLineArguments("GetPi", m_info.amountIteration, m_info.processesNumber);
+		std::string commandLine = GetCommandLineArguments("GetPi", m_info.amountIteration, index + 1);
 
 		SettingProcess(si);
 

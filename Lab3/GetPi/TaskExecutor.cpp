@@ -11,7 +11,7 @@ CTaskExecutor::~CTaskExecutor()
 
 double CTaskExecutor::GetPi(size_t amountIteration, size_t numberProcess)
 {
-	srand(UINT(time(__int64(0))));// TODO : transfer to other place
+	srand(UINT(numberProcess));// TODO : transfer to other place
 
 	double result =  4.0 * CalculateHits(amountIteration) / amountIteration;
 

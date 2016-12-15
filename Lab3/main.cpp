@@ -31,13 +31,14 @@ namespace
 
 	bool CheckAdditionalParametr(int argc, _TCHAR * argv[])
 	{
-		if (argc == AMOUNT_ARGUMENTS_WITH_ADDITIONAL)
-		{
-			if (argv[3] == HELP_PARAMETER)
+		for (size_t index = 1; index < argc; ++index)
+		{		
+			if (argv[index] == HELP_PARAMETER)
 			{
 				return true;
-			}
+			}		
 		}
+		
 		return false;
 	}	
 
@@ -51,16 +52,21 @@ int main(int argc, _TCHAR* argv[])
 
 		setlocale(LC_ALL, "RUS");
 
-		CheckParametrs(argc);
 
 		if (CheckAdditionalParametr(argc, argv))
 		{
 			PrintHelp();
+
+			if (argc == 2)
+			{
+				return 0;
+			}
 		}
+
+		CheckParametrs(argc);
 
 		CProcessRunner runner;
 		runner.Run(atoi(argv[1]), atoi(argv[2]));
-
 	}
 	catch (const std::exception & exception)
 	{

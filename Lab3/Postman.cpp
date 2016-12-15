@@ -3,7 +3,7 @@
 
 void CPostman::SendPackage(std::string const & message)
 {
-	std::string namePipe = "\\\\.\\pipe\\myPipe";
+	std::string namePipe = NAME_PIPE;
 
 	CPipe pipe;
 	pipe.Open(namePipe);
@@ -14,7 +14,7 @@ void CPostman::SendPackage(std::string const & message)
 
 void CPostman::WaitPackage(std::vector<std::string> &messages, size_t amountMessages)
 {
-	std::string namePipe = "\\\\.\\Pipe\\mypipe";
+	std::string namePipe = NAME_PIPE;
 	CNamedPipe pipe;
 	pipe.Open(namePipe);
 
@@ -25,4 +25,5 @@ void CPostman::WaitPackage(std::vector<std::string> &messages, size_t amountMess
 		pipe.ReadBytes(buffer, BUFFER_PIPE_SIZE);
 		messages.push_back(buffer);
 	}
+	pipe.Close();
 }

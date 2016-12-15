@@ -4,6 +4,8 @@
 #include <vector>
 #include "NamedPipe.h"
 
+static const std::string NAME_PIPE = "\\\\.\\Pipe\\mypipe";
+
 class CPostman
 {
 public:

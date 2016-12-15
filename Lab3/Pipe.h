@@ -8,6 +8,7 @@
 #include <sstream>
 
 static const size_t BUFFER_PIPE_SIZE = 256;
+static const size_t TIME_OUT = 256;
 
 /*
 The code from https://habrahabr.ru/post/166155/
