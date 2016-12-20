@@ -17,12 +17,14 @@ class CProcessRunner
 {
 public:
 	CProcessRunner();
+	~CProcessRunner();
 //////////////////////////////////////////////////////////////////////
 // Methods
 public:
 
 	void			Run(size_t processesNumber, size_t amountIteration);
 
+	void			CloseChannels();
 	void			WaitClients();
 	void			WaitAndRunClients();
 	void			WaitMessages();
@@ -36,5 +38,7 @@ public:
 //////////////////////////////////////////////////////////////////////
 // Data
 private:
-	std::vector<CPipe>		m_pipes;
+	std::vector<CPipe>			m_inputChannels;
+	std::vector<CNamedPipe>		m_outputChannels;
+
 };

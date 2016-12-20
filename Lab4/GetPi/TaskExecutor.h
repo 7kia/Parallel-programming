@@ -7,8 +7,8 @@
 #include <string>
 #include <iostream>
 
-#include "../Pipe.h"
-#include "../Postman.h"
+#include "Pipe.h"
+#include "Postman.h"
 
 class CTaskExecutor
 {
@@ -35,8 +35,8 @@ private:
 //////////////////////////////////////////////////////////////////////
 // Data
 public:
-	CNamedPipe			m_pipe;
-
+	CNamedPipe				m_outputChannel;
+	CPipe					m_inputChannel;
 private:
 	size_t			m_numberProcess;
 	size_t			m_amountIterations;

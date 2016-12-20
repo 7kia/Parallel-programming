@@ -4,18 +4,21 @@
 CTaskExecutor::CTaskExecutor(size_t numberProcess)
 	: m_numberProcess(numberProcess)
 {
-	m_pipe.Open(NAME_PIPE + std::to_string(numberProcess));
+	m_outputChannel.Open(NAME_PIPE + std::to_string(m_numberProcess) );
+
 }
 
 CTaskExecutor::~CTaskExecutor()
 {
+	m_inputChannel.Close();
+	m_outputChannel.Close();
 }
 
 void CTaskExecutor::WaitCommand()
 {
-	int message;
+	int message = READRY_MESSAGE;
 
-	while (!m_pipe.ReadBytes(&message, sizeof(message)))//!m_pipe.ReadBytes(&message, sizeof(message)))
+	while (!m_outputChannel.ReadBytes(&message, sizeof(message)))//!m_outputChannel.ReadBytes(&message, sizeof(message)))
 	{
 		Sleep(1000);
 	}
@@ -34,8 +37,10 @@ double CTaskExecutor::GetPi(size_t amountIteration)
 
 	std::string message = GetFinalMessage(amountIteration, result);
 
+	//m_inputChannel
+	m_inputChannel.Open(NAME_PIPE + std::to_string(m_numberProcess) + "0");
 
-	m_pipe.WriteBytes(message.data(), message.size());
+	m_inputChannel.WriteBytes(message.data(), message.size());
 
 	return result;
 }

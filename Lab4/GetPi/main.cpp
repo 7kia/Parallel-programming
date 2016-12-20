@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
 		double time = timer.elapsed().wall * pow(10.f, -9.f);// / amountThread;
 		std::cout << "time = " << time << std::endl;
 		system("pause");
-		taskExecutor.m_pipe.Close();
+		//taskExecutor.m_outputChannel.Close();
 	}
 	catch (const std::exception & exception)
 	{

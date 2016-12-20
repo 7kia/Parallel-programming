@@ -52,11 +52,13 @@ bool CNamedPipe::ReadBytes(void * buffer, size_t size)
 			return false;
 		}
 
+		return true;
 
 	}
 	DisconnectNamedPipe(m_hPipe);
 
-	return true;
+	return false;
+
 }
 
 bool CNamedPipe::WriteBytes(const void * buffer, size_t size)
