@@ -11,6 +11,7 @@
 
 #include "Postman.h"
 
+static const std::string RUN_MESSAGE = "r";
 
 class CProcessRunner
 {
@@ -23,6 +24,7 @@ public:
 	void			Run(size_t processesNumber, size_t amountIteration);
 
 	void			WaitClients();
+	void			WaitAndRunClients();
 	void			WaitMessages();
 
 	void			WaitPackage(std::vector<std::string> &messages);

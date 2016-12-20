@@ -37,7 +37,7 @@ bool CNamedPipe::Open(const std::string& name)
 }
 
 
-void CNamedPipe::ReadBytes(void * buffer, size_t size)
+bool CNamedPipe::ReadBytes(void * buffer, size_t size)
 {
 
 	if (ConnectNamedPipe(m_hPipe, NULL) != FALSE)
@@ -49,15 +49,17 @@ void CNamedPipe::ReadBytes(void * buffer, size_t size)
 		if (!bSuccess || (dwRead == 0))
 		{
 			throw std::runtime_error("Read error");
+			return false;
 		}
 
 
 	}
 	DisconnectNamedPipe(m_hPipe);
 
+	return true;
 }
 
-void CNamedPipe::WriteBytes(const void * buffer, size_t size)
+bool CNamedPipe::WriteBytes(const void * buffer, size_t size)
 {
 	if (ConnectNamedPipe(m_hPipe, NULL) != FALSE)
 	{
@@ -68,11 +70,14 @@ void CNamedPipe::WriteBytes(const void * buffer, size_t size)
 		if (!bSuccess)
 		{
 			throw std::runtime_error("Read error");
+			return false;
+
 		}
 
 	}
 	DisconnectNamedPipe(m_hPipe);
 
+	return true;
 }
 
 void CNamedPipe::Close()

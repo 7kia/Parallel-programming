@@ -11,6 +11,7 @@ void CProcessRunner::Run(size_t processesNumber, size_t amountIteration)
 
 
 	WaitClients();
+	WaitAndRunClients();
 	WaitMessages();
 }
 
@@ -26,6 +27,17 @@ void CProcessRunner::WaitClients()
 	}
 
 
+}
+
+void CProcessRunner::WaitAndRunClients()
+{
+	std::string message;
+	while (message != RUN_MESSAGE)
+	{
+		std::cout << "For run clients print \"r\""<< std::endl;
+		std::cin >> message;
+	}
+	
 }
 
 void CProcessRunner::WaitMessages()

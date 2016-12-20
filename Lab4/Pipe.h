@@ -37,8 +37,8 @@ public:
 //////////////////////////////////////////////////////////////////////
 // Methods
 public:
-	virtual void			ReadBytes(void* buffer, size_t size);
-	virtual void			WriteBytes(const void* buffer, size_t size);
+	virtual bool			ReadBytes(void* buffer, size_t size);
+	virtual bool			WriteBytes(const void* buffer, size_t size);
 
 	virtual bool			Open(const std::string& name);
 	virtual void			Close();// TODO : see need the method separately
