@@ -63,6 +63,7 @@ CPipe::~CPipe(void)
 
 bool CPipe::ReadBytes(void * buffer, size_t size)
 {
+
 	DWORD dwRead;
 	BOOL bSuccess = ReadFile(m_hPipe, buffer, DWORD(size), &dwRead, NULL);
 
@@ -77,12 +78,13 @@ bool CPipe::ReadBytes(void * buffer, size_t size)
 
 bool CPipe::WriteBytes(const void * buffer, size_t size)
 {
+
 	DWORD dwWritten;
 	BOOL bSuccess = WriteFile(m_hPipe, buffer, DWORD(size), &dwWritten, NULL);
 
 	if (!bSuccess || (dwWritten == 0))
 	{
-		throw std::runtime_error("Read error");
+		//throw std::runtime_error("Read error");
 		return false;
 	}
 

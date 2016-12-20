@@ -10,9 +10,6 @@
 #include "../Pipe.h"
 #include "../Postman.h"
 
-static const int MESSAGE_READRY = 1;
-static const int MESSAGE_UNREADY = 0;
-
 class CTaskExecutor
 {
 public:

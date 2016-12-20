@@ -13,10 +13,16 @@ CTaskExecutor::~CTaskExecutor()
 
 void CTaskExecutor::WaitCommand()
 {
-	int message = MESSAGE_READRY;
+	int message;
 
-	while (!m_pipe.WriteBytes(&message, sizeof(message)))
+	while (!m_pipe.ReadBytes(&message, sizeof(message)))//!m_pipe.ReadBytes(&message, sizeof(message)))
 	{
+		Sleep(1000);
+	}
+
+	if (message != READRY_MESSAGE)
+	{
+		throw std::runtime_error("Incorrect message");
 	}
 }
 

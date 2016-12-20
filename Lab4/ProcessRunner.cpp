@@ -38,6 +38,14 @@ void CProcessRunner::WaitAndRunClients()
 		std::cin >> message;
 	}
 	
+	int run = READRY_MESSAGE;
+	for (size_t index = 0; index < m_pipes.size(); index++)
+	{
+		while (!m_pipes[index].WriteBytes(&run, sizeof(run)))
+		{
+
+		}
+	}
 }
 
 void CProcessRunner::WaitMessages()
