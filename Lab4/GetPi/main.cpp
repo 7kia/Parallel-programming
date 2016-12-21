@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
 		size_t amountIteration = atoi(argv[1]);
 		size_t processsNumber = atoi(argv[2]);
 
-		CTaskExecutor taskExecutor(processsNumber);
+		CClientApplication taskExecutor(processsNumber);
 
 		taskExecutor.WaitCommand();
 

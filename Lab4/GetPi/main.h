@@ -8,7 +8,7 @@
 #include <boost/timer/timer.hpp>
 #include <boost/algorithm/string.hpp>
 
-#include "TaskExecutor.h"
+#include "ClientApplication.h"
 
 static const std::string MESSAGE_INCORRECT_AMOUNT_ARGUMENTS = "Incorrect amount arguments! Must will be ";
 

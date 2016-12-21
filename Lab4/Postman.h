@@ -4,7 +4,7 @@
 #include <vector>
 #include "NamedPipe.h"
 
-static const int READRY_MESSAGE = 1;
+static const int READY_MESSAGE = 1;
 static const int UNREADY_MESSAGE = 0;
 
 

@@ -7,14 +7,14 @@
 #include <string>
 #include <iostream>
 
-#include "Pipe.h"
-#include "Postman.h"
+#include "../NamedPipe.h"
+#include "../Postman.h"
 
-class CTaskExecutor
+class CClientApplication
 {
 public:
-	CTaskExecutor(size_t numberProcess);
-	~CTaskExecutor();
+	CClientApplication(size_t numberProcess);
+	~CClientApplication();
 //////////////////////////////////////////////////////////////////////
 // Methods
 public:

@@ -33,10 +33,10 @@
     <ClInclude Include="Postman.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="ProcessRunner.h">
+    <ClInclude Include="NamedPipe.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="NamedPipe.h">
+    <ClInclude Include="ServerApplication.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -53,10 +53,10 @@
     <ClCompile Include="Postman.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ProcessRunner.cpp">
+    <ClCompile Include="NamedPipe.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="NamedPipe.cpp">
+    <ClCompile Include="ServerApplication.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

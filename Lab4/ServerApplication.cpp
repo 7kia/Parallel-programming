@@ -1,16 +1,16 @@
 #include "stdafx.h"
-#include "ProcessRunner.h"
+#include "ServerApplication.h"
 
-CProcessRunner::CProcessRunner()
+CServerApplication::CServerApplication()
 {
 }
 
-CProcessRunner::~CProcessRunner()
+CServerApplication::~CServerApplication()
 {
 	CloseChannels();
 }
 
-void CProcessRunner::Run(size_t processesNumber, size_t amountIteration)
+void CServerApplication::Run(size_t processesNumber, size_t amountIteration)
 {
 	m_inputChannels.resize(processesNumber, CPipe());
 	m_outputChannels.resize(processesNumber, CNamedPipe());
@@ -20,7 +20,7 @@ void CProcessRunner::Run(size_t processesNumber, size_t amountIteration)
 	WaitMessages();
 }
 
-void CProcessRunner::CloseChannels()
+void CServerApplication::CloseChannels()
 {
 	for (size_t index = 0; index < m_inputChannels.size(); ++index)
 	{
@@ -29,7 +29,7 @@ void CProcessRunner::CloseChannels()
 	}
 }
 
-void CProcessRunner::WaitClients()
+void CServerApplication::WaitClients()
 {
 	std::cout << "Wait clients" << std::endl;
 	for (size_t index = 0; index < m_inputChannels.size(); index++)
@@ -47,7 +47,7 @@ void CProcessRunner::WaitClients()
 
 }
 
-void CProcessRunner::WaitAndRunClients()
+void CServerApplication::WaitAndRunClients()
 {
 	std::string message;
 	while (message != RUN_MESSAGE)
@@ -56,7 +56,7 @@ void CProcessRunner::WaitAndRunClients()
 		std::cin >> message;
 	}
 	
-	int run = READRY_MESSAGE;
+	int run = READY_MESSAGE;
 	for (size_t index = 0; index < m_inputChannels.size(); index++)
 	{
 		while (!m_inputChannels[index].WriteBytes(&run, sizeof(run)))
@@ -66,7 +66,7 @@ void CProcessRunner::WaitAndRunClients()
 	}
 }
 
-void CProcessRunner::WaitMessages()
+void CServerApplication::WaitMessages()
 {
 	std::vector<std::string> messages;
 	WaitPackage(messages);
@@ -79,7 +79,7 @@ void CProcessRunner::WaitMessages()
 
 
 
-std::string CProcessRunner::GetCommandLineArguments(std::string exeName, size_t amountIteration, size_t processesNumber)
+std::string CServerApplication::GetCommandLineArguments(std::string exeName, size_t amountIteration, size_t processesNumber)
 {
 	std::string name = exeName + ".exe "
 		+ std::to_string(amountIteration) + " "
@@ -89,10 +89,8 @@ std::string CProcessRunner::GetCommandLineArguments(std::string exeName, size_t 
 
 
 
-void CProcessRunner::WaitPackage(std::vector<std::string> &messages)
+void CServerApplication::WaitPackage(std::vector<std::string> &messages)
 {
-	//CPostman::SendPackage(messages, messages.size());
-	//*
 	for (size_t index = 0; index < m_inputChannels.size(); ++index)
 	{
 		char buffer[BUFFER_PIPE_SIZE] = "";
@@ -100,13 +98,6 @@ void CProcessRunner::WaitPackage(std::vector<std::string> &messages)
 		while (!m_outputChannels[index].ReadBytes(buffer, BUFFER_PIPE_SIZE))
 		{
 		}
-
-		//m_outputChannels[index].ReadBytes(buffer, BUFFER_PIPE_SIZE);
 		messages.push_back(buffer);
-
-		m_outputChannels[index].Close();
-
 	}
-
-	//*/
 }

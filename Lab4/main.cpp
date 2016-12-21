@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "main.h"
-#include "ProcessRunner.h"
+#include "ServerApplication.h"
 
 using namespace std;
 
@@ -65,7 +65,7 @@ int main(int argc, _TCHAR* argv[])
 
 		CheckParametrs(argc);
 
-		CProcessRunner runner;
+		CServerApplication runner;
 		runner.Run(atoi(argv[1]), atoi(argv[2]));
 	}
 	catch (const std::exception & exception)

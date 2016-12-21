@@ -13,11 +13,11 @@
 
 static const std::string RUN_MESSAGE = "r";
 
-class CProcessRunner
+class CServerApplication
 {
 public:
-	CProcessRunner();
-	~CProcessRunner();
+	CServerApplication();
+	~CServerApplication();
 //////////////////////////////////////////////////////////////////////
 // Methods
 public:

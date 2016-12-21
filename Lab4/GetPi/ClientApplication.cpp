@@ -1,35 +1,35 @@
 #include "stdafx.h"
-#include "TaskExecutor.h"
+#include "ClientApplication.h"
 
-CTaskExecutor::CTaskExecutor(size_t numberProcess)
+CClientApplication::CClientApplication(size_t numberProcess)
 	: m_numberProcess(numberProcess)
 {
 	m_outputChannel.Open(NAME_PIPE + std::to_string(m_numberProcess) );
 
 }
 
-CTaskExecutor::~CTaskExecutor()
+CClientApplication::~CClientApplication()
 {
 	m_inputChannel.Close();
 	m_outputChannel.Close();
 }
 
-void CTaskExecutor::WaitCommand()
+void CClientApplication::WaitCommand()
 {
-	int message = READRY_MESSAGE;
+	int message = READY_MESSAGE;
 
 	while (!m_outputChannel.ReadBytes(&message, sizeof(message)))//!m_outputChannel.ReadBytes(&message, sizeof(message)))
 	{
 		Sleep(1000);
 	}
 
-	if (message != READRY_MESSAGE)
+	if (message != READY_MESSAGE)
 	{
 		throw std::runtime_error("Incorrect message");
 	}
 }
 
-double CTaskExecutor::GetPi(size_t amountIteration)
+double CClientApplication::GetPi(size_t amountIteration)
 {
 	srand(UINT(m_numberProcess));// TODO : transfer to other place
 
@@ -37,7 +37,6 @@ double CTaskExecutor::GetPi(size_t amountIteration)
 
 	std::string message = GetFinalMessage(amountIteration, result);
 
-	//m_inputChannel
 	m_inputChannel.Open(NAME_PIPE + std::to_string(m_numberProcess) + "0");
 
 	m_inputChannel.WriteBytes(message.data(), message.size());
@@ -45,17 +44,17 @@ double CTaskExecutor::GetPi(size_t amountIteration)
 	return result;
 }
 
-double CTaskExecutor::RandomNumber()
+double CClientApplication::RandomNumber()
 {
 	return double(rand()) / RAND_MAX;
 }
 
-bool CTaskExecutor::InCircle(double x, double y)
+bool CClientApplication::InCircle(double x, double y)
 {
 	return (x*x + y*y) <= 1;
 }
 
-size_t CTaskExecutor::CalculateHits(size_t numIter)
+size_t CClientApplication::CalculateHits(size_t numIter)
 {
 	size_t numHits = 0;
 	for (size_t index = 0; index < numIter; ++index)
@@ -66,7 +65,7 @@ size_t CTaskExecutor::CalculateHits(size_t numIter)
 }
 
 // Evenly distributes indexes on processors
-std::string CTaskExecutor::GetFinalMessage(size_t amountIteration, double result)
+std::string CClientApplication::GetFinalMessage(size_t amountIteration, double result)
 {
 	std::string message = "Id process "
 		+ std::to_string(m_numberProcess) + "\n"
